@@ -1,0 +1,17 @@
+
+server {
+	listen 80;
+
+	root /var/www/html;
+
+	index index.html index.php;
+
+	autoindex on;
+
+	# pass PHP scripts to FastCGI server
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+	
+		fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+	}
+}
