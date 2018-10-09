@@ -62,12 +62,14 @@ ADD var/www/info/index.php /var/www/info/index.php
 
 # Display the php error on the web page
 RUN sed -i 's/^display_errors = .*$/display_errors = On/' /etc/php/7.2/fpm/php.ini
+RUN sed -i 's/^display_startup_errors = .*$/display_startup_errors = On/' /etc/php/7.2/fpm/php.ini
 
 # Fix PHP-FPM Error (unable to connect to Unix domain socket /run/php/php7.2-fpm.sock)
 RUN mkdir /run/php
 
 
 # Add Nginx configuration file
+ADD etc/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD etc/nginx/sites-available/default /etc/nginx/sites-available/default
 ADD etc/nginx/sites-available/info /etc/nginx/sites-available/info
 RUN ln -s /etc/nginx/sites-available/info /etc/nginx/sites-enabled/info
@@ -79,8 +81,8 @@ ADD usr/local/script/entry-point.d/php.sh /usr/local/script/entry-point.d/php.sh
 
 
 # Enable services
-RUN echo "service php$PHP_VERSION-fpm start" >> /usr/local/script/startup.sh
-RUN echo "service nginx start" >> /usr/local/script/startup.sh
+RUN echo "service php$PHP_VERSION-fpm restart" >> /usr/local/script/startup.sh
+RUN echo "service nginx restart" >> /usr/local/script/startup.sh
 
 
 # Stop services at shutdown
@@ -89,4 +91,4 @@ RUN echo "service nginx stop" >> /usr/local/script/container-stopped.sh
 
 
 # Define Environment variable
-ENV XDEBUG_IDEKEY=PHPSTORM
+ENV CONTAINER_XDEBUG_IDEKEY=PHPSTORM
