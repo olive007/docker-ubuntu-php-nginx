@@ -1,7 +1,0 @@
-server {
-	listen 88;
-
-	root /var/www/info;
-
-	index index.php;
-}

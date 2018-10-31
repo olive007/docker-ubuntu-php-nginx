@@ -1,6 +1,7 @@
 FROM olive007/ubuntu:18.04
 MAINTAINER SECRET Olivier (olivier@devolive.be)
 
+ARG GIT_URL=https://raw.githubusercontent.com/olive007/docker-commonFile
 ARG PHP_VERSION=7.2
 
 # Install php7.2 and apache2
@@ -56,7 +57,7 @@ VOLUME /var/www/html
 
 # Add file to get server information
 RUN mkdir /var/www/info
-ADD var/www/info/index.php /var/www/info/index.php
+ADD $GIT_URL/master/var/www/info/index.php /var/www/info/index.php
 
 
 
@@ -69,20 +70,19 @@ RUN mkdir /run/php
 
 
 # Add Nginx configuration file
-ADD etc/nginx/nginx.conf /etc/nginx/nginx.conf
-ADD etc/nginx/sites-available/default /etc/nginx/sites-available/default
-ADD etc/nginx/sites-available/info /etc/nginx/sites-available/info
+ADD $GIT_URL/master/etc/nginx/sites-available/default /etc/nginx/sites-available/default
+ADD $GIT_URL/master/etc/nginx/sites-available/info /etc/nginx/sites-available/info
 RUN ln -s /etc/nginx/sites-available/info /etc/nginx/sites-enabled/info
 
 
 # Add script configuration for nginx and php
-ADD usr/local/script/entry-point.d/nginx.sh /usr/local/script/entry-point.d/nginx.sh
-ADD usr/local/script/entry-point.d/php.sh /usr/local/script/entry-point.d/php.sh
+ADD $GIT_URL/master/usr/local/script/entry-point.d/nginx.sh /usr/local/script/entry-point.d/nginx.sh
+ADD $GIT_URL/master/usr/local/script/entry-point.d/php.sh /usr/local/script/entry-point.d/php.sh
 
 
 # Enable services
-RUN echo "service php$PHP_VERSION-fpm restart" >> /usr/local/script/startup.sh
-RUN echo "service nginx restart" >> /usr/local/script/startup.sh
+RUN echo "service php$PHP_VERSION-fpm start" >> /usr/local/script/startup.sh
+RUN echo "service nginx start" >> /usr/local/script/startup.sh
 
 
 # Stop services at shutdown
